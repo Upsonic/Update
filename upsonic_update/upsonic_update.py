@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from upsonic import Upsonic, Upsonic_Remote, HASHES, console
+from upsonic import console
 from rich.progress import track
 import copy
 
