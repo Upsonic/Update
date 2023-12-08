@@ -10,7 +10,7 @@ class Upsonic_Update:
     def __init__(self, cloud, pre_update_all=False, clear_olds=False) -> None:
         self.cloud = cloud
         self.pre_update_dict = {}
-        self.pre_update_count = 0
+        self.pre_update_get_all = 0
         self.clear_olds = clear_olds
 
         if pre_update_all:
@@ -19,7 +19,7 @@ class Upsonic_Update:
         backup = copy.copy(self.cloud.force_encrypt)
         self.cloud.force_encrypt = None
         self.pre_update_dict[key] = self.cloud.get(key, encryption_key=None)
-        self.pre_update_count = len(self.cloud.get_all())
+        self.pre_update_get_all = (self.cloud.get_all())
         self.cloud.force_encrypt = backup
         self.start_time = time.time()
 
@@ -30,7 +30,7 @@ class Upsonic_Update:
         for key in self.cloud.get_all():
             if "_upsonic_" not in key:
                 self.pre_update_dict[key] = self.cloud.get(key, encryption_key=None)
-        self.pre_update_count = len(self.cloud.get_all())                
+        self.pre_update_get_all = (self.cloud.get_all())                
         self.cloud.force_encrypt = backup
         self.start_time = time.time()
 
@@ -44,10 +44,14 @@ class Upsonic_Update:
         error = []
         backup = copy.copy(self.cloud.force_encrypt)
         self.cloud.force_encrypt = None
-
-        if self.pre_update_count != len(self.cloud.get_all()):
+        new_get_all = self.cloud.get_all()
+        if len(self.pre_update_get_all) != len(new_get_all):
             console.log("") if not just_important else None
             console.log("[bold green] New Keys Found")
+            #print the new keys
+            for key in new_get_all:
+                if key not in self.pre_update_get_all:
+                    console.log(f" {key}: [bold green]New Key")
 
         for key in track(self.pre_update_dict, description="           ", console=console):
             result = False
