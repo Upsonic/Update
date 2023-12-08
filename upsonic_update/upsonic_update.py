@@ -7,15 +7,31 @@ from rich.progress import track
 import copy
 
 class Upsonic_Update:
-    def __init__(self, cloud) -> None:
+    def __init__(self, cloud, pre_update_all=False, clear_olds=False) -> None:
         self.cloud = cloud
         self.pre_update_dict = {}
+        self.clear_olds = clear_olds
+
+        if pre_update_all:
+            self.pre_update_all()
     def pre_update(self, key):
         backup = copy.copy(self.cloud.force_encrypt)
         self.cloud.force_encrypt = None
         self.pre_update_dict[key] = self.cloud.get(key, encryption_key=None)
         self.cloud.force_encrypt = backup
         self.start_time = time.time()
+
+
+    def pre_update_all(self):
+        backup = copy.copy(self.cloud.force_encrypt)
+        self.cloud.force_encrypt = None
+        for key in self.cloud.get_all():
+            if "_upsonic_" not in key:
+                self.pre_update_dict[key] = self.cloud.get(key, encryption_key=None)
+        self.cloud.force_encrypt = backup
+        self.start_time = time.time()
+
+
     def update(self, just_important:bool=False) -> bool:
         console.log("") if not just_important else None
         console.log("[bold green] Update Started")if not just_important else None
@@ -43,7 +59,11 @@ class Upsonic_Update:
         console.log(f" Update took {took_time}s")
 
         for key in error:
-            console.log(f" {key}: [bold red]Failure")
+            the_error_message = f" {key}: [bold red]Failure"
+            if self.clear_olds:
+                self.cloud.delete(key)
+                the_error_message += " [bold green]Cleared"
+            console.log(the_error_message)
 
         console.log("")
         if len(error) != 0:
