@@ -17,12 +17,19 @@ class Upsonic_Update:
             self.pre_update_all()
     def pre_update(self, *key):
         backup = copy.copy(self.cloud.force_encrypt)
+        backup_2 = copy.copy(self.cloud.cache)
+        self.cloud.cache = False
         self.cloud.force_encrypt = None
         console.log(f"[bold white] Preparing to Update:")
+    
+        if type(key[0]) == tuple:
+            key = key[0]
+
         for _key in track(key, description="           ", console=console):
             self.pre_update_dict[_key] = self.cloud.get(_key, encryption_key=None)
         self.pre_update_get_all = (self.cloud.get_all())
         self.cloud.force_encrypt = backup
+        self.cloud.cache = backup_2
         self.start_time = time.time()
 
 
@@ -31,6 +38,8 @@ class Upsonic_Update:
 
     def pre_update_all(self):
         backup = copy.copy(self.cloud.force_encrypt)
+        backup_2 = copy.copy(self.cloud.cache)
+        self.cloud.cache = False
         self.cloud.force_encrypt = None
         console.log(f"[bold white] Preparing to Update:")
         for key in track(self.cloud.get_all(), description="           ", console=console):
@@ -38,6 +47,7 @@ class Upsonic_Update:
                 self.pre_update_dict[key] = self.cloud.get(key, encryption_key=None)
         self.pre_update_get_all = (self.cloud.get_all())                
         self.cloud.force_encrypt = backup
+        self.cloud.cache = backup_2
         self.start_time = time.time()
 
 
@@ -49,6 +59,8 @@ class Upsonic_Update:
         console.log(f"[bold white] Updating: {the_update_list}")
         error = []
         backup = copy.copy(self.cloud.force_encrypt)
+        backup_2 = copy.copy(self.cloud.cache)
+        self.cloud.cache = False
         self.cloud.force_encrypt = None
         new_get_all = self.cloud.get_all()
         if len(self.pre_update_get_all) != len(new_get_all):
@@ -72,6 +84,7 @@ class Upsonic_Update:
             if not result:
                 error.append(key)
         self.cloud.force_encrypt = backup
+        self.cloud.cache = backup_2        
         end_time = time.time()
         took_time = int(end_time - self.start_time)
         console.log(f" Update took {took_time}s")
