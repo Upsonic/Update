@@ -27,7 +27,8 @@ class Upsonic_Update:
     def pre_update_all(self):
         backup = copy.copy(self.cloud.force_encrypt)
         self.cloud.force_encrypt = None
-        for key in self.cloud.get_all():
+        console.log(f"[bold white] Preparing to Update:")
+        for key in track(self.cloud.get_all(), description="           ", console=console):
             if "_upsonic_" not in key:
                 self.pre_update_dict[key] = self.cloud.get(key, encryption_key=None)
         self.pre_update_get_all = (self.cloud.get_all())                
