@@ -15,13 +15,18 @@ class Upsonic_Update:
 
         if pre_update_all:
             self.pre_update_all()
-    def pre_update(self, key):
+    def pre_update(self, *key):
         backup = copy.copy(self.cloud.force_encrypt)
         self.cloud.force_encrypt = None
-        self.pre_update_dict[key] = self.cloud.get(key, encryption_key=None)
+        console.log(f"[bold white] Preparing to Update:")
+        for _key in track(key, description="           ", console=console):
+            self.pre_update_dict[_key] = self.cloud.get(_key, encryption_key=None)
         self.pre_update_get_all = (self.cloud.get_all())
         self.cloud.force_encrypt = backup
         self.start_time = time.time()
+
+
+
 
 
     def pre_update_all(self):
