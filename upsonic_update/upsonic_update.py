@@ -7,14 +7,14 @@ from rich.progress import track
 import copy
 
 class Upsonic_Update:
-    def __init__(self, cloud, pre_update_all=False, clear_olds=False) -> None:
+    def __init__(self, cloud, pre_update_all=False, pre_update_all_exclude=[], clear_olds=False) -> None:
         self.cloud = cloud
         self.pre_update_dict = {}
         self.pre_update_get_all = 0
         self.clear_olds = clear_olds
 
         if pre_update_all:
-            self.pre_update_all()
+            self.pre_update_all(pre_update_all_exclude)
     def pre_update(self, *key):
         backup = copy.copy(self.cloud.force_encrypt)
         backup_2 = copy.copy(self.cloud.cache)
@@ -36,14 +36,14 @@ class Upsonic_Update:
 
 
 
-    def pre_update_all(self):
+    def pre_update_all(self, pre_update_all_exclude=[]):
         backup = copy.copy(self.cloud.force_encrypt)
         backup_2 = copy.copy(self.cloud.cache)
         self.cloud.cache = False
         self.cloud.force_encrypt = None
         console.log(f"[bold white] Preparing to Update:")
         for key in track(self.cloud.get_all(), description="           ", console=console):
-            if "_upsonic_" not in key:
+            if "_upsonic_" not in key and key not in pre_update_all_exclude:
                 self.pre_update_dict[key] = self.cloud.get(key, encryption_key=None)
         self.pre_update_get_all = (self.cloud.get_all())                
         self.cloud.force_encrypt = backup
@@ -62,7 +62,12 @@ class Upsonic_Update:
         backup_2 = copy.copy(self.cloud.cache)
         self.cloud.cache = False
         self.cloud.force_encrypt = None
-        new_get_all = self.cloud.get_all()
+        new_get_all_ = self.cloud.get_all()
+        new_get_all=  {}
+        #Remvoe the keys that contain _upsonic_
+        for key in new_get_all_:
+            if "_upsonic_" not in key:
+                new_get_all[key] = new_get_all_[key]
         if len(self.pre_update_get_all) != len(new_get_all):
             console.log("") if not just_important else None
             console.log("[bold green] New Keys Found")
