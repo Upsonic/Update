@@ -45,7 +45,14 @@ class Upsonic_Update:
         for key in track(self.cloud.get_all(), description="           ", console=console):
             if "_upsonic_" not in key and key not in pre_update_all_exclude:
                 self.pre_update_dict[key] = self.cloud.get(key, encryption_key=None)
-        self.pre_update_get_all = (self.cloud.get_all())                
+
+        the_get_all_ = self.cloud.get_all()
+        the_get_all = {}
+        for key in the_get_all_:
+            if "_upsonic_" not in key:
+                the_get_all[key] = the_get_all_[key]
+
+        self.pre_update_get_all = (the_get_all)                
         self.cloud.force_encrypt = backup
         self.cloud.cache = backup_2
         self.start_time = time.time()
