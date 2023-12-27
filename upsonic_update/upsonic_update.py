@@ -31,6 +31,7 @@ class Upsonic_Update:
         self.cloud.force_encrypt = backup
         self.cloud.cache = backup_2
         self.start_time = time.time()
+        console.log(f"[bold green] Reading")
 
 
 
@@ -56,6 +57,7 @@ class Upsonic_Update:
         self.cloud.force_encrypt = backup
         self.cloud.cache = backup_2
         self.start_time = time.time()
+        console.log(f"[bold green] Reading")
 
 
     def update(self, just_important:bool=False) -> bool:
