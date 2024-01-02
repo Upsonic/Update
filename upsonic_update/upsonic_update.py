@@ -82,6 +82,7 @@ class Upsonic_Update:
         if len(self.pre_update_get_all) != len(new_get_all):
             console.log("") if not just_important else None
             console.log("[bold green] New Keys Found")
+            self.cloud.set("_upsonic_new_keys", True)
             #print the new keys
             for key in new_get_all:
                 if key not in self.pre_update_get_all:
