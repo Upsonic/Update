@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import time
-from upsonic import console
+from upsonic import console, Upsonic_Remote
 from rich.progress import track
 import copy
 
 class Upsonic_Update:
     def __init__(self, cloud, pre_update_all=False, pre_update_all_exclude=[], clear_olds=False) -> None:
+        Upsonic_Remote.prevent_enable = True
         self.cloud = cloud
         self.pre_update_dict = {}
         self.pre_update_get_all = 0
