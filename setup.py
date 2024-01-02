@@ -7,7 +7,7 @@ with open('requirements.txt') as fp:
     install_requires = fp.read()
 setup(
     name="upsonic_update",
-    version="0.4.8",
+    version="0.4.9",
     description="""The cloud updating system for your python applications !""",
     long_description="".join(open("README.md", encoding="utf-8").readlines()),
     long_description_content_type="text/markdown",
