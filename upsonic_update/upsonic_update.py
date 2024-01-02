@@ -9,6 +9,7 @@ import copy
 class Upsonic_Update:
     def __init__(self, cloud, pre_update_all=False, pre_update_all_exclude=[], clear_olds=False) -> None:
         Upsonic_Remote.prevent_enable = True
+        Upsonic_Remote.quiet_startup = True
         self.cloud = cloud
         self.pre_update_dict = {}
         self.pre_update_get_all = 0
